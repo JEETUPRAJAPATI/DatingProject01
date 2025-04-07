@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { X, Heart, Star, Filter } from 'lucide-react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { 
+  FadeIn,
+  SlideInUp,
+  SlideOutDown,
+  useAnimatedStyle,
+  withSpring,
+  useSharedValue,
+  withTiming
+} from 'react-native-reanimated';
 
 const DUMMY_PROFILES = [
   {
@@ -31,6 +39,9 @@ export default function HomeScreen() {
     gender: 'female'
   });
 
+  const filterScale = useSharedValue(1);
+  const filterRotate = useSharedValue(0);
+
   const handleLike = () => {
     if (currentProfile < DUMMY_PROFILES.length - 1) {
       setCurrentProfile(currentProfile + 1);
@@ -49,13 +60,36 @@ export default function HomeScreen() {
     }
   };
 
+  const handleFilterPress = () => {
+    filterScale.value = withSpring(0.8, {}, () => {
+      filterScale.value = withSpring(1);
+    });
+    filterRotate.value = withTiming(360, {
+      duration: 1000,
+    }, () => {
+      filterRotate.value = 0;
+    });
+    setShowFilters(true);
+  };
+
+  const filterStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { scale: filterScale.value },
+        { rotate: `${filterRotate.value}deg` }
+      ],
+    };
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>DATINGLUV</Text>
-        <TouchableOpacity onPress={() => setShowFilters(true)}>
-          <Filter size={24} color="#333" />
-        </TouchableOpacity>
+        <Animated.View style={filterStyle}>
+          <TouchableOpacity onPress={handleFilterPress}>
+            <Filter size={24} color="#333" />
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
       <View style={styles.cardContainer}>
@@ -91,10 +125,14 @@ export default function HomeScreen() {
 
       <Modal
         visible={showFilters}
-        animationType="slide"
+        animationType="none"
         transparent={true}
       >
-        <View style={styles.modalContainer}>
+        <Animated.View 
+          entering={SlideInUp}
+          exiting={SlideOutDown}
+          style={styles.modalContainer}
+        >
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Filters</Text>
@@ -170,7 +208,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </Animated.View>
       </Modal>
     </View>
   );

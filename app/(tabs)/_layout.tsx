@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, Heart, MessageCircle, User, Settings } from 'lucide-react-native';
+import { Chrome as Home, Heart, MapPin, MessageCircle, User } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -10,6 +10,9 @@ export default function TabLayout() {
           backgroundColor: '#fff',
           borderTopWidth: 1,
           borderTopColor: '#f5f5f5',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
         },
         tabBarActiveTintColor: '#FF4B6A',
         tabBarInactiveTintColor: '#999',
@@ -22,9 +25,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="likes"
+        name="discover"
         options={{
-          title: 'Likes',
+          title: 'Discover',
+          tabBarIcon: ({ color, size }) => <MapPin size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="matches"
+        options={{
+          title: 'Matches',
           tabBarIcon: ({ color, size }) => <Heart size={size} color={color} />,
         }}
       />
@@ -40,13 +50,6 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Settings',
-          tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
         }}
       />
     </Tabs>

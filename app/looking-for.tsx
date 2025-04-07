@@ -8,7 +8,7 @@ export default function LookingForScreen() {
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleNext = () => {
-    router.push('/auth');
+    router.push('/upload-photos');
   };
 
   const options = [
